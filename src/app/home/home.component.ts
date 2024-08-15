@@ -1,6 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, HostListener, ElementRef } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { FormBuilder } from "@angular/forms";
+import { UPDATE } from "@ngrx/store";
 
 @Component({
   selector: 'home',
@@ -12,12 +13,26 @@ export class HomeComponent {
   rowToEdit: number = -1;
   editForm!: any;
 
-  constructor(private httpClient: HttpClient, private fb: FormBuilder) {
+  constructor(private httpClient: HttpClient, private fb: FormBuilder, private eRef:ElementRef) {
     this.fetchUser();
     this.initForm();
 
   }
 
+
+//events
+@HostListener('document:click', ['$event'])
+clickout(event:any) {
+  if(this.eRef.nativeElement.contains(event.target)) {
+   console.log("clicked inside")
+  } else {
+    console.log("clicked outside");
+    this.editForm.reset();
+    this.rowToEdit = -1;
+  }
+}
+
+//data
   private fetchUser() {
     this.httpClient.get('https://jsonplaceholder.typicode.com/users')
       .subscribe({
@@ -37,8 +52,9 @@ export class HomeComponent {
   }
 
 
-
+//table events
   edit(index: number, user: any) {
+    console.log('edit');
     this.rowToEdit = index;
     this.editForm.patchValue({
       name: user.name,
@@ -47,8 +63,18 @@ export class HomeComponent {
     })
 
   }
-  save(user: any) {
+  save(index: number) {   
+    if (this.rowToEdit === -1) {
+      return;
+    }
+     //update record
+    this.users[index] = Object.assign(this.users[index], this.editForm.value);
+
+    //reset
+    this.editForm.reset();
     this.rowToEdit = -1;
-    console.log(user)
   }
+
+
+
 }
