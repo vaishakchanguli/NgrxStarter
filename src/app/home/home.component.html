@@ -12,14 +12,26 @@
 
     <tbody>
         @for(user of users;track user){
-        <tr>
+        <tr [attr.id]="$index">
+            @if(rowToEdit === $index){
+            <ng-container *ngTemplateOutlet="EditRow;context:{_user:user}">
+            </ng-container>
+            } @else {
             <td>{{user.id}}</td>
             <td>{{user.name}}</td>
             <td>{{user.username}}</td>
             <td>{{user.email}}</td>
-            <td><i class="fa fa-pencil"></i></td>
-            <td><i class="fa fa-save"></i></td>
+            }
+            <td><i class="fa fa-pencil cursor-pointer" (click)="edit($index, user)"></i></td>
+            <td><i class="fa fa-save  cursor-pointer" (click)="save(user)"></i></td>
         </tr>
         }
     </tbody>
 </table>
+
+<ng-template #EditRow let-user="_user" [formGroup]="editForm">
+    <td>{{user?.id}}</td>
+    <td><input type="text" formControlName="name" /></td>
+    <td><input type="text" [value]="user?.username" /></td>
+    <td><input type="text" [value]="user?.email" /></td>
+</ng-template>
