@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
-  styles: [``]
+  styleUrl:'./home.component.css'
 })
 export class HomeComponent {
   users: Array<any> = [];
