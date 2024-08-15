@@ -5,6 +5,7 @@ import {AppComponent} from './app.component';
 import {StoreModule} from "@ngrx/store";
 import {EffectsModule} from "@ngrx/effects";
 import {HomeModule} from "./home/home.module";
+import { provideHttpClient } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import {HomeModule} from "./home/home.module";
   declarations: [
     AppComponent
   ],
+  providers:[provideHttpClient()],
   bootstrap: [
     AppComponent
   ]
