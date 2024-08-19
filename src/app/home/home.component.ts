@@ -2,6 +2,7 @@ import { Component, HostListener, ElementRef } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { Store } from "@ngrx/store";
 import { loadData, updateData } from "../store/user.actions";
+import { selectAllUsers } from "../store/user.reducer";
 
 @Component({
   selector: 'home',
@@ -24,11 +25,15 @@ export class HomeComponent {
   }
 
   ngOnInit() {
-    this.store.select('users').subscribe({
-      next: (users: any) => {
-        this.users = users.data;
-      }, error: (error: any) => { this, this.users = [] }
+    this.store.select(selectAllUsers).subscribe((response) => {
+      console.log('selector response', response)
     })
+
+    // this.store.select('users').subscribe({
+    //   next: (users: any) => {
+    //     this.users = users.data;
+    //   }, error: (error: any) => { this, this.users = [] }
+    // })
   }
 
   //events

@@ -7,32 +7,41 @@ import {
     updateDataSuccess
 } from './user.actions';
 
-export interface State {
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { User } from './user.model';
+
+export const adapter: EntityAdapter<User> = createEntityAdapter<User>();
+
+export interface State extends EntityState<User> {
+    // additional entity state properties
     data: any;
     loading: boolean;
     error: any;
-}
+};
 
-export const initialState: State = {
+export const initialState: State = adapter.getInitialState({
     data: null,
     loading: false,
     error: null
-};
+});
 
 export const userReducer = createReducer(
     initialState,
     on(loadData, state => {
-        return {
-            ...state,
-            loading: true
-        };
+        return adapter.setAll([], state);
+        // return {
+        //     ...state,
+        //     loading: true
+        // };
     }),
     on(loadDataSuccess, (state, { payload }) => {
-        return {
-            ...state,
-            loading: false,
-            data: payload
-        };
+        console.log(payload)
+        return adapter.setAll(payload, state);
+        // return {
+        //     ...state,
+        //     loading: false,
+        //     data: payload
+        // };
     }),
     on(loadDataFailure, (state, { payload }) => {
         return {
@@ -67,3 +76,12 @@ export const userReducer = createReducer(
         };
     }),
 );
+
+
+// get the selectors
+const {
+    selectAll
+} = adapter.getSelectors();
+
+// select the array of users
+export const selectAllUsers = selectAll;
