@@ -25,18 +25,10 @@ export class UserEffects {
         this.actions$.pipe(
             ofType(updateData),
             map(payload => payload),
-            tap((payload) => { console.log('payload is', payload) }),
             switchMap((payload: any) =>
-                this.http.get('https://jsonplaceholder.typicode.com/users').pipe(
-                    map((data: any) => {
-                        for (let i = 0; i < data.length; i++) {
-                            if (data[i].id === payload.id) {
-                                data[i] = payload;
-                                break;
-                            }
-                        }
-                        return updateDataSuccess({ payload: data })
-                    }),
+                this.http.patch(`https://jsonplaceholder.typicode.com/users/${payload.id}`, payload).pipe(
+                    tap((data)=>{console.log(data)}),
+                    map((data: any) => updateDataSuccess({ payload: data })),
                     catchError(error => of(updateDataFailure({ payload: error })))
                 )
             )

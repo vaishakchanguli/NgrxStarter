@@ -41,22 +41,22 @@ export const userReducer = createReducer(
             error: payload
         };
     }),
-    on(updateData, (state, {payload}) => {
+    on(updateData, (state, { payload }) => {
         return {
             ...state,
             loading: true
         };
     }),
     on(updateDataSuccess, (state, { payload }) => {
-        console.log({
-            ...state,
-            loading: false,
-            data: payload
-        })
         return {
             ...state,
             loading: false,
-            data: payload
+            data: state.data.map((data: any) => {
+                if (data.id === payload.id) {
+                    return payload;
+                }
+                return data;
+            })
         };
     }),
     on(updateDataFailure, (state, { payload }) => {
