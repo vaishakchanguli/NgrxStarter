@@ -1,7 +1,8 @@
 import { Component, HostListener, ElementRef } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
 import { FormBuilder } from "@angular/forms";
-import { UPDATE } from "@ngrx/store";
+import { Store } from "@ngrx/store";
+import { State } from "../store/user.reducer";
+import { loadData } from "../store/user.actions";
 
 @Component({
   selector: 'home',
@@ -13,36 +14,37 @@ export class HomeComponent {
   rowToEdit: number = -1;
   editForm!: any;
 
-  constructor(private httpClient: HttpClient, private fb: FormBuilder, private eRef:ElementRef) {
-    this.fetchUser();
+  constructor(private fb: FormBuilder,
+    private eRef: ElementRef,
+    private store: Store<any>) {
+
+    this.store.dispatch(loadData());
+
     this.initForm();
-
   }
 
 
-//events
-@HostListener('document:click', ['$event'])
-clickout(event:any) {
-  if(this.eRef.nativeElement.contains(event.target)) {
-   console.log("clicked inside")
-  } else {
-    console.log("clicked outside");
-    this.editForm.reset();
-    this.rowToEdit = -1;
+  ngOnInit() {
+    this.store.select('users').subscribe({
+      next: (users: any) => {
+        this.users = users.data;
+      }, error: (error: any) => { this, this.users = [] }
+    })
   }
-}
 
-//data
-  private fetchUser() {
-    this.httpClient.get('https://jsonplaceholder.typicode.com/users')
-      .subscribe({
-        next: (response: any) => {
-          this.users = response;
-          console.log(response)
-        },
-        error: () => { }
-      })
+  //events
+  @HostListener('document:click', ['$event'])
+  clickout(event: any) {
+    if (this.eRef.nativeElement.contains(event.target)) {
+      console.log("clicked inside")
+    } else {
+      console.log("clicked outside");
+      this.editForm.reset();
+      this.rowToEdit = -1;
+    }
   }
+
+  //data
   private initForm() {
     this.editForm = this.fb.group({
       name: [''],
@@ -52,7 +54,7 @@ clickout(event:any) {
   }
 
 
-//table events
+  //table events
   edit(index: number, user: any) {
     console.log('edit');
     this.rowToEdit = index;
@@ -63,11 +65,11 @@ clickout(event:any) {
     })
 
   }
-  save(index: number) {   
+  save(index: number) {
     if (this.rowToEdit === -1) {
       return;
     }
-     //update record
+    //update record
     this.users[index] = Object.assign(this.users[index], this.editForm.value);
 
     //reset
