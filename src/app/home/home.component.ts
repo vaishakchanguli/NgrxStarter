@@ -2,7 +2,7 @@ import { Component, HostListener, ElementRef } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { Store } from "@ngrx/store";
 import { loadData, updateData } from "../store/user.actions";
-import { selectAllUsers } from "../store/user.reducer";
+import { selectAllUsers } from "../store/user.selector";
 
 @Component({
   selector: 'home',
@@ -26,7 +26,8 @@ export class HomeComponent {
 
   ngOnInit() {
     this.store.select(selectAllUsers).subscribe((response) => {
-      console.log('selector response', response)
+      this.users = response;
+      // console.log('selector response', response)
     })
 
     // this.store.select('users').subscribe({
