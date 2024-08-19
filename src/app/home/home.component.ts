@@ -1,8 +1,7 @@
 import { Component, HostListener, ElementRef } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { Store } from "@ngrx/store";
-import { State } from "../store/user.reducer";
-import { loadData } from "../store/user.actions";
+import { loadData, updateData } from "../store/user.actions";
 
 @Component({
   selector: 'home',
@@ -22,7 +21,6 @@ export class HomeComponent {
 
     this.initForm();
   }
-
 
   ngOnInit() {
     this.store.select('users').subscribe({
@@ -70,7 +68,10 @@ export class HomeComponent {
       return;
     }
     //update record
-    this.users[index] = Object.assign(this.users[index], this.editForm.value);
+    //this.users[index] = Object.assign(this.users[index], this.editForm.value);
+    this.store.dispatch(updateData({...this.users[index],... this.editForm.value}))
+
+
 
     //reset
     this.editForm.reset();
