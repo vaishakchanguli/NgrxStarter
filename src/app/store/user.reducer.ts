@@ -47,12 +47,12 @@ export const userReducer = createReducer(
             loading: true
         };
     }),
-    on(updateDataSuccess, (state, { payload }) => {
+    on(updateDataSuccess, (state, { payload, beforeUpdate }) => {
         return {
             ...state,
             loading: false,
             data: state.data.map((data: any) => {
-                if (data.id === payload.id) {
+                if (data.id === beforeUpdate.id) {
                     return payload;
                 }
                 return data;

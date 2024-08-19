@@ -24,11 +24,12 @@ export class UserEffects {
     updateData$ = createEffect(() =>
         this.actions$.pipe(
             ofType(updateData),
-            map(payload => payload),
-            switchMap((payload: any) =>
-                this.http.patch(`https://jsonplaceholder.typicode.com/users/${payload.id}`, payload).pipe(
-                    tap((data)=>{console.log(data)}),
-                    map((data: any) => updateDataSuccess({ payload: data })),
+            //map(({payload, beforeUpdate}) => {payload, beforeUpdate}),
+            tap((payload)=>{console.log('tap',payload)}),
+            switchMap((data: any) =>
+                this.http.patch(`https://jsonplaceholder.typicode.com/users/${data.beforeUpdate.id}`, data.payload).pipe(
+                    tap((response)=>{console.log(response)}),
+                    map((response: any) => updateDataSuccess({ payload: response , beforeUpdate: data.beforeUpdate})),
                     catchError(error => of(updateDataFailure({ payload: error })))
                 )
             )

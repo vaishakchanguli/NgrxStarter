@@ -11,6 +11,7 @@ import { loadData, updateData } from "../store/user.actions";
 export class HomeComponent {
   users: Array<any> = [];
   rowToEdit: number = -1;
+  row: any = {};
   editForm!: any;
 
   constructor(private fb: FormBuilder,
@@ -45,6 +46,7 @@ export class HomeComponent {
   //data
   private initForm() {
     this.editForm = this.fb.group({
+      id: [0],
       name: [''],
       username: [''],
       email: ['']
@@ -54,9 +56,10 @@ export class HomeComponent {
 
   //table events
   edit(index: number, user: any) {
-    console.log('edit');
     this.rowToEdit = index;
+    this.row = user;
     this.editForm.patchValue({
+      id: user.id,
       name: user.name,
       username: user.username,
       email: user.email
@@ -68,8 +71,7 @@ export class HomeComponent {
       return;
     }
     //update record
-    //this.users[index] = Object.assign(this.users[index], this.editForm.value);
-    this.store.dispatch(updateData({...this.users[index],... this.editForm.value}))
+    this.store.dispatch(updateData({ payload: { ...this.users[index], ... this.editForm.value }, beforeUpdate: this.row }))
 
 
 

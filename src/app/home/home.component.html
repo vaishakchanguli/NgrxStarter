@@ -39,7 +39,8 @@
 
 
 <ng-template #EditRow let-user="_user" [formGroup]="editForm">
-    <td>{{user?.id}}</td>
+    <!-- <td>{{user?.id}}</td> -->
+    <td><input type="number" class="form-control" style="width:50px;padding:8px 4px" formControlName="id" /></td>
     <td><input type="text" class="form-control w-75" formControlName="name" /></td>
     <td><input type="text" class="form-control w-75" formControlName="username" /></td>
     <td><input type="text" class="form-control w-75" formControlName="email" /></td>
